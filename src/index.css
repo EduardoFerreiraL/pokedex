@@ -1,0 +1,110 @@
+/* Configurações Gerais */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+/* Header */
+header {
+  background-color: #ef5350; /* Vermelho Pokédex */
+  color: white;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+header h1 {
+  font-size: 2.5rem;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+}
+
+/* Navbar */
+nav {
+  background-color: #333;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 1rem;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+nav a:hover {
+  color: #ffcb05; /* Amarelo Pikachu */
+}
+
+/* Lista de Pokémon (Grid) */
+section {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+/* Container dos Cards dentro do PokemonCard.jsx */
+section > div {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+/* Cards Individuais */
+section div > div {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #ddd;
+}
+
+section div > div:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+section div img {
+  width: 150px;
+  height: 150px;
+  background-color: #f9f9f9;
+  border-radius: 50%;
+  margin-bottom: 15px;
+}
+
+section div h2 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: #2c3e50;
+}
+
+section div p {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #7f8c8d;
+  background: #ecf0f1;
+  padding: 5px 10px;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 2rem;
+  background-color: #333;
+  color: white;
+  margin-top: 50px;
+}
