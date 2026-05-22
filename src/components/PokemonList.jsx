@@ -1,53 +1,73 @@
 import PokemonCard from './PokemonCard'
-import { useState } from 'react'
-import { POKEMONS } from '../data/pokemons'
-
+import { useState, useEffect } from 'react'
+import { fetchPokemonList } from '../services/pokemonApi'
 
 function PokemonList() {
-  const [pokemons] = useState(POKEMONS)
+  const [pokemons, setPokemons] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [filtro, setFiltro] = useState('')
 
-  const listaFiltrada = pokemons.filter((p) =>
-     p.name.toLowerCase().includes(filtro.toLowerCase()))
+  useEffect(() => {
+    let cancelled = false
 
-  const totalEncontrados = listaFiltrada.length
+    async function loadPokemons() {
+      try {
+        setLoading(true)
+        setError(null)
+        const data = await fetchPokemonList(1500)
+        if (!cancelled) setPokemons(data)
+      } catch (err) {
+        if (!cancelled) setError(err.message ?? 'Erro ao carregar.')
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    }
+
+    loadPokemons()
+    return () => { cancelled = true }
+  }, [])
+
+  const listaFiltrada = pokemons.filter((p) =>
+    p.name.toLowerCase().includes(filtro.toLowerCase())
+  )
 
   return (
     <section>
-      {/* Área de busca e contador fora do grid para não quebrar o layout */}
-      <div style={{ marginBottom: '20px', textAlign: 'center' }}>
-        <label htmlFor="busca"><strong>Buscar por nome: </strong></label>
-        <input
-          id="busca"
-          type="search"
-          value={filtro}
-          onChange={(e) => setFiltro(e.target.value)}
-          placeholder="Ex.: char"
-          style={{ padding: '8px', borderRadius: '5px', border: '1px solid #ccc' }}
-        />
-        <p style={{ marginTop: '10px' }}>Pokemons encontrados: {totalEncontrados}</p>
-      </div>
+      <label htmlFor="busca">Buscar por nome: </label>
+      <input
+        id="busca"
+        type="search"
+        value={filtro}
+        onChange={(e) => setFiltro(e.target.value)}
+        placeholder="Ex.: char"
+      />
 
-      <hr style={{ marginBottom: '20px' }} />
+      {loading && <p>Carregando Pokémon...</p>}
+      
+      {error && <p role="alert">{error}</p>}
+      
+      {!loading && !error && listaFiltrada.length === 0 && (
+        <p>Nenhum Pokémon encontrado.</p>
+      )}
 
-      {/* Container do Grid: O CSS 'section > div' aplicará o grid aqui */}
-      <div> 
-        {totalEncontrados === 0 ? (
-          <p style={{ gridColumn: '1 / -1', textAlign: 'center' }}>
-            Não há nenhum pokemon na lista/filtro.
-          </p>
-        ) : (
-          listaFiltrada.map((pokemon) => (
-            <PokemonCard 
-              key={pokemon.id}
-              id={pokemon.id}
-              name={pokemon.name}
-              type={pokemon.type}
-              imageUrl={pokemon.imageUrl} 
-            />
-          ))
-        )}
-      </div>
+      {!loading && !error && listaFiltrada.length > 0 && (
+        <>
+          <label>Mostrando {listaFiltrada.length} pokemons:</label>
+          {/* Aqui está o grid correto com apenas um .map */}
+          <div className="pokemon-grid">
+            {listaFiltrada.map((pokemon) => (
+              <PokemonCard
+                key={pokemon.id}
+                id={pokemon.id}
+                name={pokemon.name}
+                type={pokemon.type}
+                imageUrl={pokemon.imageUrl}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </section>
   )
 }
